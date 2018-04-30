@@ -28,3 +28,6 @@ $(TARGETS:%=%-checkout):
 
 $(TARGETS:%=%-clean):
 	rm -rf stack/$(@:%-clean=%)
+
+deploy:
+	docker-compose up -d

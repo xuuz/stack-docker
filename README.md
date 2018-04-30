@@ -16,7 +16,7 @@ RAM:
 ![Docker VM memory settings](screenshots/docker-vm-memory-settings.png)
 
 ## Starting the stack
-Try `docker-compose up` to create a demonstration Elastic Stack with
+Try `make deploy` to create a demonstration Elastic Stack with
 Elasticsearch, Kibana, Logstash, Auditbeat, Metricbeat, Filebeat, Packetbeat,
 and Heartbeat.
 
