@@ -1,5 +1,5 @@
 ---
-version: '3'
+version: '3.6'
 services:
   # The environment variable "TAG" is used throughout this file to
   # specify the version of the images to run. The default is set in the
@@ -21,8 +21,16 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch-platinum:${TAG}
     container_name: elasticsearch
     environment: ['http.host=0.0.0.0', 'transport.host=127.0.0.1', 'ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
+    secrets:
+      - source: elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        uid: '1000'
+        gid: '1000'
+        mode: 0440
     ports: ['127.0.0.1:9200:9200']
     networks: ['stack']
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${TAG}
@@ -37,11 +45,17 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:${TAG}
     container_name: logstash
-    environment:
-      - 'xpack.monitoring.elasticsearch.password=${ELASTIC_PASSWORD}'
-    # Provide a simple pipeline configuration for Logstash with a bind-mounted file.
-    volumes:
-      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    secrets:
+      - source: logstash.conf
+        target: /usr/share/logstash/pipeline/logstash.conf
+        uid: '1000'
+        gid: '1000'
+        mode: 0440
+      - source: logstash.yml
+        target: /usr/share/logstash/logstash.yml
+        uid: '1000'
+        gid: '1000'
+        mode: 0440
     networks: ['stack']
     depends_on: ['elasticsearch', 'setup_logstash']
 
@@ -189,3 +203,13 @@ services:
     depends_on: ['elasticsearch','kibana']
 
 networks: {stack: {}}
+volumes:
+  es_data:
+
+secrets:
+  logstash.yml:
+    file: ./config/logstash/logstash.yml
+  logstash.conf:
+    file: ./config/logstash/pipeline/logstash.conf
+  elasticsearch.yml:
+    file: ./config/elasticsearch/elasticsearch.yml
