@@ -31,3 +31,46 @@ $(TARGETS:%=%-clean):
 
 deploy:
 	docker-compose up -d
+
+deploy_elasticsearch:
+	docker-compose up -d elasticsearch
+
+deploy_kibana: deploy_elasticsearch
+	docker-compose up -d kibana
+
+down:
+	docker-compose down
+
+purge:
+	docker-compose down --volumes --remove-orphans
+
+setup_logstash:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme logstash /usr/local/bin/setup-logstash.sh
+
+setup_kibana:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme kibana /usr/local/bin/setup-kibana.sh
+
+setup_auditbeat:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme auditbeat /usr/local/bin/setup-beat.sh auditbeat
+
+setup_filebeat:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme filebeat /usr/local/bin/setup-beat.sh filebeat
+
+setup_heartbeat:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme heartbeat /usr/local/bin/setup-beat.sh heartbeat
+
+setup_metricbeat:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme metricbeat /usr/local/bin/setup-beat.sh metricbeat
+
+setup_packetbeat:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme packetbeat /usr/local/bin/setup-beat.sh packetbeat
+
+setup_apm-server:
+	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme apm-server /usr/local/bin/setup-beat.sh apm-server
+
+SETUP_TARGETS:= setup_logstash setup_kibana setup_auditbeat setup_filebeat setup_heartbeat setup_metricbeat setup_packetbeat setup_apm-server
+
+setup: deploy_kibana
+	make -j $(SETUP_TARGETS)
+
+magic: setup deploy
