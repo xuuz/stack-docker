@@ -63,7 +63,7 @@ setup_metricbeat:
 	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme metricbeat /usr/local/bin/setup-beat.sh metricbeat
 
 setup_packetbeat:
-	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme packetbeat /usr/local/bin/setup-beat.sh packetbeat
+	docker run --rm -it --cap-add=NET_ADMIN  -e ELASTIC_PASSWORD=changeme -v `pwd`/scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro --network=stack-docker_stack --entrypoint="/bin/sh" docker.elastic.co/beats/packetbeat:6.2.4 -c  "/usr/local/bin/setup-beat.sh packetbeat"
 
 setup_apm-server:
 	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme apm-server /usr/local/bin/setup-beat.sh apm-server
