@@ -71,6 +71,6 @@ setup_apm-server:
 SETUP_TARGETS:= setup_logstash setup_kibana setup_auditbeat setup_filebeat setup_heartbeat setup_metricbeat setup_packetbeat setup_apm-server
 
 setup: deploy_kibana
-	make -j $(SETUP_TARGETS)
+	$(MAKE) -j $(SETUP_TARGETS) && stty sane
 
 magic: setup deploy
