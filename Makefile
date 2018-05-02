@@ -32,7 +32,7 @@ $(TARGETS:%=%-clean):
 deploy:
 	docker-compose up -d
 
-deploy_elasticsearch:
+deploy_elasticsearch: setup_elasticsearch
 	docker-compose up -d elasticsearch
 
 deploy_kibana: deploy_elasticsearch
@@ -43,6 +43,9 @@ down:
 
 purge:
 	docker-compose down --volumes --remove-orphans
+
+setup_elasticsearch:
+	docker-compose run -e ELASTIC_PASSWORD=changeme elasticsearch /usr/local/bin/setup-elasticsearch.sh
 
 setup_logstash:
 	docker-compose run --no-deps -e ELASTIC_PASSWORD=changeme logstash /usr/local/bin/setup-logstash.sh

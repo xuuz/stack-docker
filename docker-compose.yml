@@ -25,10 +25,10 @@ services:
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     ports: ['127.0.0.1:9200:9200']
     networks: ['stack']
-    # Make exception for `elastic` pw in ENV file cause it's built into the entry point.
-    # something to take a look at in the future.
-    env_file: .env
-    volumes: ['es_data:/usr/share/elasticsearch/data']
+    volumes:
+      - 'es_data:/usr/share/elasticsearch/data'
+      - 'es_config:/usr/share/elasticsearch/config'
+      - './scripts/setup-elasticsearch.sh:/usr/local/bin/setup-elasticsearch.sh:ro'
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${TAG}
@@ -158,6 +158,7 @@ services:
 networks: {stack: {}}
 volumes:
   es_data:
+  es_config:
 
 secrets:
   logstash.yml:
