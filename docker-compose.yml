@@ -54,10 +54,9 @@ services:
       - source: logstash.yml
         target: /usr/share/logstash/logstash.yml
       - source: logstash.keystore
-        target: /usr/share/logstash/logstash.keystore
+        target: /usr/share/logstash/config/logstash.keystore
     volumes:
       - './scripts/setup-logstash.sh:/usr/local/bin/setup-logstash.sh:ro'
-      - './config/logstash:/tmp'
     networks: ['stack']
     depends_on: ['elasticsearch']
 
