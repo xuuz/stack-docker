@@ -1,4 +1,5 @@
 output.elasticsearch:
   hosts: ['elasticsearch:9200']
   username: elastic
-  password: changeme
+  # Read PW from apm-server.keystore
+  password: "${ELASTIC_PASSWORD}"

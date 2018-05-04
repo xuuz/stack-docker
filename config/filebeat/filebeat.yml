@@ -12,4 +12,5 @@ processors:
 output.elasticsearch:
   hosts: ['elasticsearch:9200']
   username: elastic
-  password: changeme
+  # Read PW from filebeat.keystore
+  password: "${ELASTIC_PASSWORD}"

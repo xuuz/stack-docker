@@ -8,4 +8,5 @@ processors:
 output.elasticsearch:
   hosts: ['elasticsearch:9200']
   username: elastic
-  password: changeme
+  # Read password from metricbeat.keystore
+  password: "${ELASTIC_PASSWORD}"

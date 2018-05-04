@@ -16,4 +16,5 @@ auditbeat.modules:
 output.elasticsearch:
   hosts: ['elasticsearch:9200']
   username: elastic
-  password: changeme
+  # Read PW from auditbeat.keystore
+  password: "${ELASTIC_PASSWORD}"
