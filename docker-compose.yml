@@ -23,11 +23,12 @@ services:
     secrets:
       - source: elasticsearch.yml
         target: /usr/share/elasticsearch/config/elasticsearch.yml
+      - source: elasticsearch.keystore
+        target: /usr/share/elasticsearch/config/elasticsearch.keystore
     ports: ['127.0.0.1:9200:9200']
     networks: ['stack']
     volumes:
       - 'es_data:/usr/share/elasticsearch/data'
-      - 'es_config:/usr/share/elasticsearch/config'
       - './scripts/setup-elasticsearch.sh:/usr/local/bin/setup-elasticsearch.sh:ro'
 
   kibana:
@@ -36,8 +37,11 @@ services:
     secrets:
       - source: kibana.yml
         target: /usr/share/kibana/config/kibana.yml
+      - source: kibana.keystore
+        target: /usr/share/kibana/data/kibana.keystore
     ports: ['127.0.0.1:5601:5601']
-    volumes: ['./scripts/setup-kibana.sh:/usr/local/bin/setup-kibana.sh:ro']
+    volumes:
+      - './scripts/setup-kibana.sh:/usr/local/bin/setup-kibana.sh:ro'
     networks: ['stack']
     depends_on: ['elasticsearch']
 
@@ -49,7 +53,11 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
       - source: logstash.yml
         target: /usr/share/logstash/logstash.yml
-    volumes: ['./scripts/setup-logstash.sh:/usr/local/bin/setup-logstash.sh:ro']
+      - source: logstash.keystore
+        target: /usr/share/logstash/logstash.keystore
+    volumes:
+      - './scripts/setup-logstash.sh:/usr/local/bin/setup-logstash.sh:ro'
+      - './config/logstash:/tmp'
     networks: ['stack']
     depends_on: ['elasticsearch']
 
@@ -158,17 +166,22 @@ services:
 networks: {stack: {}}
 volumes:
   es_data:
-  es_config:
 
 secrets:
   logstash.yml:
     file: ./config/logstash/logstash.yml
+  logstash.keystore:
+    file: ./config/logstash/logstash.keystore
   logstash.conf:
     file: ./config/logstash/pipeline/logstash.conf
   elasticsearch.yml:
     file: ./config/elasticsearch/elasticsearch.yml
+  elasticsearch.keystore:
+    file: ./config/elasticsearch/elasticsearch.keystore
   kibana.yml:
     file: ./config/kibana/kibana.yml
+  kibana.keystore:
+    file: ./config/kibana/kibana.keystore
   auditbeat.yml:
     file: ./config/auditbeat/auditbeat.yml
   filebeat.yml:
