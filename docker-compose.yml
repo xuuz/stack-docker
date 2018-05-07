@@ -82,6 +82,11 @@ services:
         target: /usr/share/logstash/config/certs/ca/ca.crt
     networks: ['stack']
     depends_on: ['elasticsearch']
+    healthcheck:
+      test: bin/logstash -t
+      interval: 60s
+      timeout: 50s
+      retries: 5
 
   auditbeat:
     image: docker.elastic.co/beats/auditbeat:${TAG}
@@ -101,6 +106,11 @@ services:
       - './scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro'
     networks: ['stack']
     depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: auditbeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:${TAG}
@@ -120,6 +130,11 @@ services:
       - './scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro'
     networks: ['stack']
     depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: filebeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   heartbeat:
     image: docker.elastic.co/beats/heartbeat:${TAG}
@@ -136,6 +151,11 @@ services:
       - './scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro'
     networks: ['stack']
     depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: heartbeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:${TAG}
@@ -160,6 +180,11 @@ services:
       - './scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro'
     networks: ['stack']
     depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: metricbeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   packetbeat:
     image: docker.elastic.co/beats/packetbeat:${TAG}
@@ -186,6 +211,11 @@ services:
     volumes:
       - './scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro'
     depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: packetbeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   apm-server:
     image: docker.elastic.co/apm/apm-server:${TAG}
