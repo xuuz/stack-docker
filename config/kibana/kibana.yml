@@ -2,7 +2,11 @@
 
 server.name: kibana
 server.host: "0"
-elasticsearch.url: http://elasticsearch:9200
-elasticsearch.username: elastic
+server.ssl.enabled: true
+server.ssl.certificate: /usr/share/kibana/config/certs/kibana/kibana.crt
+server.ssl.key: /usr/share/kibana/config/certs/kibana/kibana.key
+elasticsearch.url: https://elasticsearch:9200
+elasticsearch.username: kibana
+elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/config/certs/ca/ca.crt"]
 # elasticsearch.password is stored in `kibana.keystore`
 xpack.monitoring.ui.container.elasticsearch.enabled: true
