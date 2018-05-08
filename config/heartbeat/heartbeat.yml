@@ -20,7 +20,7 @@ output.elasticsearch:
   hosts: ['elasticsearch:9200']
   protocol: "https"
   username: elastic
-  # Read PW from auditbeat.keystore
+  # Read PW from heartbeat.keystore
   password: "${ELASTIC_PASSWORD}"
   ssl.certificate_authorities: ["/usr/share/heartbeat/certs/ca/ca.crt"]
 
