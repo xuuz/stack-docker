@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-cacert=/config/elasticsearch/ca/ca.crt
+cacert=/usr/share/kibana/config/ca/ca.crt
 # Wait for ca file to exist before we continue. If the ca file doesn't exist
 # then something went wrong.
 while [ ! -f $cacert ]
@@ -27,10 +27,14 @@ do
     echo Retrying...
 done
 
-until curl --cacert $cacert -s -H 'Content-Type:application/json' \
-     -XPUT $es_url/_xpack/security/user/logstash_system/_password \
-     -d "{\"password\": \"${ELASTIC_PASSWORD}\"}"
-do
-    sleep 2
-    echo Retrying...
-done
+
+echo "=== CREATE Keystore ==="
+if [ -f /config/kibana/kibana.keystore ]; then
+    echo "Remove old kibana.keystore"
+    rm /config/kibana/kibana.keystore
+fi
+/usr/share/kibana/bin/kibana-keystore create
+echo "Setting elasticsearch.password..."
+echo "$ELASTIC_PASSWORD" | /usr/share/kibana/bin/kibana-keystore add 'elasticsearch.password' -x
+
+mv /usr/share/kibana/data/kibana.keystore /config/kibana/kibana.keystore

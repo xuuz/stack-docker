@@ -31,8 +31,6 @@ services:
         target: /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.key
       - source: elasticsearch.crt
         target: /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.crt
-      - source: elasticsearch.p12
-        target: /usr/share/elasticsearch/config/certs/elasticsearch.p12
     ports: ['9200:9200']
     networks: ['stack']
     volumes:
@@ -90,7 +88,7 @@ services:
   auditbeat:
     image: docker.elastic.co/beats/auditbeat:${TAG}
     container_name: auditbeat
-    command: -e  # -e flag to log to stderr and disable syslog/file output
+    command: -e --strict.perms=false # -e flag to log to stderr and disable syslog/file output
     cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
     secrets:
       - source: auditbeat.yml

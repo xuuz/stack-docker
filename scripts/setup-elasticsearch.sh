@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -f /config/elasticsearch/elasticsearch.keystore ]; then
+    echo "Keystore already exists, exiting. If you want to re-run please delete config/elasticsearch/elasticsearch.keystore"
+    exit 0
+fi
 
 # Determine if x-pack is enabled
 echo "Determining if x-pack is installed..."
@@ -57,4 +61,3 @@ if /usr/share/elasticsearch/bin/elasticsearch-plugin list -s | grep -q x-pack; t
         mv /config/ssl/docker-cluster/elasticsearch/* /config/elasticsearch/
     fi
 fi
-
