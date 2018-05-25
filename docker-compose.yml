@@ -104,7 +104,7 @@ services:
     networks: ['stack']
     depends_on: ['elasticsearch', 'kibana']
     healthcheck:
-      test: auditbeat test config
+      test: auditbeat --strict.perms=false test config
       interval: 30s
       timeout: 15s
       retries: 5
